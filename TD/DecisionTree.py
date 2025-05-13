@@ -147,7 +147,7 @@ class RandomForest:
 
     def my_MNIST_Fashion_parameters()->(int, int, float):
 	    # Modify RHS in the next line:
-        nb_trees, max_depth, ratio = 10,10,0.35
+        nb_trees, max_depth, ratio = 10,20,0.35
         return (nb_trees, max_depth, ratio)
 
 def main():
