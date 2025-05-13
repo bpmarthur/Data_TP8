@@ -1,1 +1,5 @@
+# Ignorer certains fichiers
 DecisionTree_lucas.py
+
+# Ignorer le dossier __pycache__ et tous ses contenus
+__pycache__/
