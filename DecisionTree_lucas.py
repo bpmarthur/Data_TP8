@@ -79,7 +79,6 @@ def train_single_tree(args):        #fonction necessaire pour le multiprocessing
     tree.fit(X_sample, y_sample)
     return tree
                 
-
 class RandomForest:
     """
     Attributes:

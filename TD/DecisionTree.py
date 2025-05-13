@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from sklearn import datasets
 import numpy as np
 from sklearn.model_selection import train_test_split
+import multiprocessing
 
 class DecisionTree:
         max_depth: int
@@ -87,6 +88,67 @@ class DecisionTree:
                 self.left.fit(X_moins, y_moins, depth + 1)
                 self.right.fit(X_plus, y_plus, depth + 1)
                 return
+        def predict(self, X:np.ndarray)->int:
+            """
+            Nous allons prédire la classe de X
+            """
+            if self.value is not None:
+                return self.value
+            else:
+                if X[self.feature_index] <= self.threshold:
+                    return self.left.predict(X)
+                else:
+                    return self.right.predict(X)
+
+#Fonction d'entraînement d'un unique arbre de décision afin de la lancer en //
+def train_single_tree(args):
+    tree, X_sample, y_sample = args
+    tree.fit(X_sample, y_sample)
+    return tree
+                
+class RandomForest:
+    """
+    Attributes:
+    - trees: np.array
+    """
+
+    def __init__(self, nbtrees=1, max_depth=1):
+        self.trees = np.array([DecisionTree(max_depth) for _ in range(nbtrees)])
+
+    def fit_without_multiprocessing(self, X: np.array, y: np.array, ratio=0.3) -> None:
+        """
+        Construction de tous les arbres par itération
+        """
+        for tree in self.trees:
+            random_index = np.random.choice(len(X), size =int(len(X) * ratio), replace=True)
+            X_sample = X[random_index]
+            y_sample = y[random_index]
+            tree.fit(X_sample, y_sample)
+
+    def fit(self, X: np.ndarray, y: np.ndarray, ratio=0.3) -> None:
+        #Ajout des arguments pour préparer le multiprocessing
+        args = []
+        for tree in self.trees:
+            index = np.random.choice(len(X), int(len(X) * ratio), replace=True)
+            X_sample = X[index]
+            y_sample = y[index]
+            args.append((tree, X_sample, y_sample))
+
+        #Utilisation de multiprocessing pour entraîner les arbres en parallèle
+        with multiprocessing.Pool() as pool:
+            self.trees = np.array(pool.map(train_single_tree, args))
+    
+    def predict(self, X: np.ndarray) -> int:
+        """
+        Nous allons prédire la classe de X
+        """
+        predictions = np.array([tree.predict(X) for tree in self.trees])
+        return np.argmax(np.bincount(predictions))  #Bincount compte les occurences de chaque entier (classe) puis argmax renvoie l'indice de celle avec le plus d'occurences
+
+    def my_MNIST_Fashion_parameters()->(int, int, float):
+	    # Modify RHS in the next line:
+        nb_trees, max_depth, ratio = 10,10,0.35
+        return (nb_trees, max_depth, ratio)
 
 def main():
     '''
@@ -124,5 +186,14 @@ def main():
     mytree.fit(iris.data, iris.target)
     print_tree(mytree)
 
+    '''
+    Test Q4
+    '''
+    decisionTree4 = DecisionTree(max_depth=3)
+    decisionTree4.fit(X, y)
+    print(f"4) Predicted value : {decisionTree4.predict([1.,1.,2.,1.7])}") #On prédit la classe de X[0]
+
+    
 if __name__ == "__main__":
-    main()
+    #main()
+    pass
