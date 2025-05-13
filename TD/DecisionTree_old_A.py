@@ -25,7 +25,7 @@ class DecisionTree:
             """
             Nous calculons l'entropie de y
             """
-            counts = np.bincount(y, minlength=10)
+            _, counts = np.unique(y, return_counts=True)
             probabilities = counts / len(y)
             return -np.sum(probabilities * np.log2(probabilities + 1e-10))  #On souhaite éviter de faire log(0). De tte facon si c'est 0 le tout fera 0
 

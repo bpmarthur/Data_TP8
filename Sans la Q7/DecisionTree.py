@@ -25,7 +25,7 @@ class DecisionTree:
             """
             Nous calculons l'entropie de y
             """
-            counts = np.bincount(y, minlength=10)
+            _, counts = np.unique(y, return_counts=True)
             probabilities = counts / len(y)
             return -np.sum(probabilities * np.log2(probabilities + 1e-10))  #On souhaite éviter de faire log(0). De tte facon si c'est 0 le tout fera 0
 
@@ -145,11 +145,12 @@ class RandomForest:
         predictions = np.array([tree.predict(X) for tree in self.trees])
         return np.argmax(np.bincount(predictions))  #Bincount compte les occurences de chaque entier (classe) puis argmax renvoie l'indice de celle avec le plus d'occurences
 
-    
+    '''
     def my_MNIST_Fashion_parameters()->(int, int, float):
 	    # Modify RHS in the next line:
         nb_trees, max_depth, ratio = 10,20,0.35
         return (nb_trees, max_depth, ratio)
+        '''
 
 def main():
     '''

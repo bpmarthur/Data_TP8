@@ -1,7 +1,7 @@
 #! /usr/bin/env python3 
 import sys
 import time
-from TD.DecisionTree import *
+from TD.DecisionTree_old_A import *
 import numpy as np
 
 import unittest
